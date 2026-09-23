@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arr" markerWidth="12" markerHeight="12" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#232F3E"/>
+    </marker>
+    <filter id="sh" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="6" flood-color="#000000" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+  <rect width="1920" height="1080" fill="#FAFBFC"/>
+  <text x="960" y="64" text-anchor="middle" font-size="40" font-weight="bold" fill="#232F3E">Lambda Function — Processing Logic</text>
+  <text x="960" y="104" text-anchor="middle" font-size="21" fill="#5F6B7A">index.mjs · Node.js 24.x · runs per SQS batch (event.Records loop)</text>
+
+  <!-- Start -->
+  <g filter="url(#sh)">
+    <rect x="810" y="140" width="300" height="70" rx="35" fill="#ED7100"/>
+    <text x="960" y="184" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFFFFF">SQS batch received</text>
+  </g>
+  <line x1="960" y1="210" x2="960" y2="250" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Parse -->
+  <g filter="url(#sh)">
+    <rect x="760" y="252" width="400" height="80" rx="12" fill="#FFFFFF" stroke="#232F3E" stroke-width="2.5"/>
+    <text x="960" y="285" text-anchor="middle" font-size="18" fill="#232F3E">Parse record.body (webhook JSON)</text>
+    <text x="960" y="312" text-anchor="middle" font-size="18" fill="#232F3E">Extract incidentId = event.data.id</text>
+  </g>
+  <line x1="960" y1="332" x2="960" y2="372" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Fetch -->
+  <g filter="url(#sh)">
+    <rect x="710" y="374" width="500" height="80" rx="12" fill="#E8F7EE" stroke="#06AC38" stroke-width="2.5"/>
+    <text x="960" y="407" text-anchor="middle" font-size="18" fill="#232F3E">GET api.pagerduty.com/incidents/{id}</text>
+    <text x="960" y="434" text-anchor="middle" font-size="18" fill="#232F3E">?include[]=first_trigger_log_entries</text>
+  </g>
+  <line x1="960" y1="454" x2="960" y2="494" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Extract body -->
+  <g filter="url(#sh)">
+    <rect x="735" y="496" width="450" height="70" rx="12" fill="#FFFFFF" stroke="#232F3E" stroke-width="2.5"/>
+    <text x="960" y="539" text-anchor="middle" font-size="18" fill="#232F3E">Read first_trigger_log_entry.channel.body</text>
+  </g>
+  <line x1="960" y1="566" x2="960" y2="606" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Decision -->
+  <g filter="url(#sh)">
+    <polygon points="960,600 1230,710 960,820 690,710" fill="#FFF8E7" stroke="#FF9900" stroke-width="3"/>
+    <text x="960" y="695" text-anchor="middle" font-size="20" font-weight="bold" fill="#232F3E">Body matches</text>
+    <text x="960" y="725" text-anchor="middle" font-size="20" font-weight="bold" fill="#232F3E">/incident\s*workflow/i ?</text>
+  </g>
+
+  <!-- YES branch -->
+  <line x1="1230" y1="710" x2="1420" y2="710" stroke="#06AC38" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="1310" y="695" text-anchor="middle" font-size="19" font-weight="bold" fill="#06AC38">YES</text>
+  <g filter="url(#sh)">
+    <rect x="1425" y="600" width="420" height="105" rx="12" fill="#E8F7EE" stroke="#06AC38" stroke-width="2.5"/>
+    <text x="1635" y="638" text-anchor="middle" font-size="18" font-weight="bold" fill="#232F3E">POST /incidents/{id}/notes</text>
+    <text x="1635" y="665" text-anchor="middle" font-size="16" fill="#5F6B7A">“Pattern match succeeded.</text>
+    <text x="1635" y="688" text-anchor="middle" font-size="16" fill="#5F6B7A">Triggering workflow.”</text>
+  </g>
+  <line x1="1635" y1="705" x2="1635" y2="745" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+  <g filter="url(#sh)">
+    <rect x="1425" y="747" width="420" height="105" rx="12" fill="#E8F7EE" stroke="#06AC38" stroke-width="2.5"/>
+    <text x="1635" y="785" text-anchor="middle" font-size="18" font-weight="bold" fill="#232F3E">POST /incident_workflows/</text>
+    <text x="1635" y="812" text-anchor="middle" font-size="18" font-weight="bold" fill="#232F3E">PYW8VXV/instances</text>
+    <text x="1635" y="838" text-anchor="middle" font-size="16" fill="#5F6B7A">→ Incident Workflow executes</text>
+  </g>
+
+  <!-- NO branch -->
+  <line x1="690" y1="710" x2="500" y2="710" stroke="#B0084D" stroke-width="3" marker-end="url(#arr)"/>
+  <text x="610" y="695" text-anchor="middle" font-size="19" font-weight="bold" fill="#B0084D">NO</text>
+  <g filter="url(#sh)">
+    <rect x="75" y="655" width="420" height="110" rx="12" fill="#FDF0F5" stroke="#B0084D" stroke-width="2.5"/>
+    <text x="285" y="697" text-anchor="middle" font-size="18" font-weight="bold" fill="#232F3E">POST /incidents/{id}/notes</text>
+    <text x="285" y="724" text-anchor="middle" font-size="16" fill="#5F6B7A">“Match failed. Skipping trigger.”</text>
+    <text x="285" y="748" text-anchor="middle" font-size="16" fill="#5F6B7A">(timeline note only — no workflow)</text>
+  </g>
+
+  <!-- End -->
+  <g filter="url(#sh)">
+    <rect x="810" y="920" width="300" height="70" rx="35" fill="#232F3E"/>
+    <text x="960" y="964" text-anchor="middle" font-size="20" font-weight="bold" fill="#FFFFFF">Return 200 · next record</text>
+  </g>
+  <line x1="960" y1="820" x2="960" y2="912" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+  <path d="M285,765 L285,955 L802,955" fill="none" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+  <path d="M1635,852 L1635,955 L1118,955" fill="none" stroke="#232F3E" stroke-width="3" marker-end="url(#arr)"/>
+
+  <!-- Error note -->
+  <g filter="url(#sh)">
+    <rect x="1470" y="140" width="380" height="120" rx="12" fill="#FFFFFF" stroke="#D5DBDB" stroke-width="2"/>
+    <text x="1660" y="175" text-anchor="middle" font-size="17" font-weight="bold" fill="#232F3E">Error handling</text>
+    <text x="1660" y="202" text-anchor="middle" font-size="15" fill="#5F6B7A">try/catch per record — one corrupt</text>
+    <text x="1660" y="224" text-anchor="middle" font-size="15" fill="#5F6B7A">message never crashes the batch.</text>
+    <text x="1660" y="246" text-anchor="middle" font-size="15" fill="#5F6B7A">Failures → DLQ after 3 receives.</text>
+  </g>
+</svg>

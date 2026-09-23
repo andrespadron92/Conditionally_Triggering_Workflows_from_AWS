@@ -1,0 +1,12 @@
+{
+  "name": "pagerduty-webhook-processing-aws",
+  "version": "1.0.0",
+  "description": "AWS Lambda function that reads a PagerDuty incident's email body and conditionally triggers an Incident Workflow via the PagerDuty REST API.",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT",
+  "author": "Andrés Padrón"
+}
