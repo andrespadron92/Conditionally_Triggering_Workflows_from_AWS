@@ -1,12 +1,12 @@
 # PagerDuty Webhook Processing on AWS
 
-A serverless AWS project that closes a real gap in PagerDuty: **service-level email integrations can't decide whether to run an Incident Workflow based on what's actually written in the email**. This project reads that email body back out via the PagerDuty REST API and conditionally triggers a workflow — entirely with AWS-managed, serverless components.
+A serverless AWS project that closes a real gap in PagerDuty: **service-level email integrations can't decide whether to run an Incident Workflow based on what's actually written in the email**. This project reads that email body back out via the PagerDuty REST API and conditionally triggers a workflow, entirely with AWS-managed, serverless components.
 
 Built as a hands-on exploration of how a customer could implement this kind of custom automation using cloud compute, rather than just recommending it.
 
 ## The Problem
 
-PagerDuty service-level email integrations do **not** go through Event Orchestration — only email filters and email management rules apply. Those rules can accept, reject, or deduplicate an incoming email, but they can't inspect the email's content and decide, based on that content, whether an Incident Workflow should run.
+PagerDuty service-level email integrations do **not** go through Event Orchestration, only email filters and email management rules apply. Those rules can accept, reject, or deduplicate an incoming email, but they can't inspect the email's content and decide, based on that content, whether an Incident Workflow should run.
 
 **Goal:** show how AWS can close that gap — process the outbound PagerDuty webhook, inspect the original email body, and act on the incident via REST API. The pattern generalizes to any "inspect payload → call API → act" automation.
 
@@ -102,10 +102,6 @@ Required Lambda environment variables:
 | `PAGERDUTY_FROM_EMAIL` | The email address used in the `From` header for note-creation calls |
 
 Runtime: Node.js 24.x · Trigger: SQS event source mapping · Recommended timeout: 6 seconds.
-
-## Acknowledgments
-
-Special thanks to Nicolas Suarez from Rundeck Support for helping deploy this solution on the Rundeck AWS instance.
 
 ## Author
 
